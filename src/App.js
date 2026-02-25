@@ -1,30 +1,41 @@
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faTrash, faCheck } from "@fortawesome/free-solid-svg-icons";
-import "./App.css";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import Task from "./Components/task";
+import "./App.css"
 
 function App() {
-
-  const [task, setTask] = useState("");
-  const [tasks, setTasks] = useState([]);
+  const [taskName, setTaskName] = useState("");
+  const [taskTime, setTaskTime] = useState("");
+  const [taskList, setTaskList] = useState([]);
 
   const addTask = () => {
-    if (task.trim() === "") return;
+    if (!taskName.trim()) return;
 
-    setTasks([...tasks, { text: task, completed: false }]);
-    setTask("");
+    const newTask = {
+      id: Date.now(),
+      task: taskName,
+      time: taskTime,
+      completed: false,
+    };
+
+    setTaskList([...taskList, newTask]);
+    setTaskName("");
+    setTaskTime("");
   };
 
-  const toggleTask = (index) => {
-    const updated = [...tasks];
-    updated[index].completed = !updated[index].completed;
-    setTasks(updated);
+  const deleteTask = (id) => {
+    setTaskList(taskList.filter((task) => task.id !== id));
   };
 
-  const deleteTask = (index) => {
-    const updated = tasks.filter((_, i) => i !== index);
-    setTasks(updated);
-  }
+  const toggleComplete = (id) => {
+    setTaskList(
+      taskList.map((task) =>
+        task.id === id ? { ...task, completed: !task.completed } : task
+      )
+    );
+  };
+
   return (
     <div className="container">
       <h1>Task Manager</h1>
@@ -33,37 +44,31 @@ function App() {
         <input
           type="text"
           placeholder="Enter task..."
-          value={task}
-          onChange={(e) => setTask(e.target.value)}
+          value={taskName}
+          onChange={(e) => setTaskName(e.target.value)}
         />
 
-        <button onClick={addTask}><FontAwesomeIcon icon={faPlus} /></button>
+        <input
+          type="date"
+          value={taskTime}
+          onChange={(e) => setTaskTime(e.target.value)}
+        />
+
+        <button onClick={addTask}>
+          Add Task <FontAwesomeIcon icon={faPlus} />
+        </button>
       </div>
 
       <div className="task-list">
-        {tasks.map((t, index) => (
-          <div
-            key={index}
-            className={`task ${t.completed ? "completed" : ""}`}
-          >
-            <span onClick={() => toggleTask(index)}>
-              <FontAwesomeIcon icon={faCheck} />
-            </span>
-
-            <p>{t.text}</p>
-
-            <span onClick={() => deleteTask(index)}>
-              <FontAwesomeIcon icon={faTrash} />
-            </span>
-          </div>
+        {taskList.map((task) => (
+          <Task
+            key={task.id}
+            task={task}
+            deleteTask={deleteTask}
+            toggleComplete={toggleComplete}
+          />
         ))}
-    
       </div>
-
-      <div className="footer">
-        Total Tasks: {tasks.length}
-      </div>
-    
     </div>
   );
 }
