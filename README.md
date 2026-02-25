@@ -7,8 +7,5 @@ A beginner React project that allows users to:
 
 ## Built With
 - React
-- App.css
-- Font Awesome
 
-## Author
-Rekik
+
