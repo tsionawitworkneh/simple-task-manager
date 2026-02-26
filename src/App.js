@@ -9,6 +9,12 @@ function App() {
   const [taskTime, setTaskTime] = useState("");
   const [taskList, setTaskList] = useState([]);
 
+  const [darkMode, setDarkMode] = useState(false);
+
+  const toggleTheme = () => {
+    setDarkMode(!darkMode);
+  };
+
   const addTask = () => {
     if (!taskName.trim()) return;
 
@@ -37,8 +43,16 @@ function App() {
   };
 
   return (
-    <div className="container">
-      <h1>Task Manager</h1>
+    <div className={darkMode ? "container dark" : "container"}>
+
+      <div className="header">
+        <h1>Task Manager</h1>
+
+        <button className="theme-btn" onClick={toggleTheme}>
+          {darkMode ? "☀️ Light" : "🌙 Dark"}
+        </button>
+      </div>
+      
 
       <div className="input-group">
         <input
